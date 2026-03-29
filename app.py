@@ -1,15 +1,15 @@
-from fastapi import FastAPI
+import streamlit as st
 import pandas as pd
-from model import simple_forecast
+import requests
 
-app = FastAPI()
+st.title("AI Demand Forecasting Tool")
 
-@app.get("/")
-def home():
-    return {"message": "AI Demand Forecasting API Running"}
+file = st.file_uploader("Upload CSV with 'sales' column")
 
-@app.post("/forecast")
-def forecast(data: dict):
-    df = pd.DataFrame(data)
-    result = simple_forecast(df)
-    return {"forecast": result}
+if file:
+    df = pd.read_csv(file)
+    st.write(df.head())
+
+    if st.button("Generate Forecast"):
+        response = requests.post("http://localhost:8000/forecast", json=df.to_dict())
+        st.write(response.json())
