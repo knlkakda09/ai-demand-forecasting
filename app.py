@@ -11,5 +11,5 @@ if file:
     st.write(df.head())
 
     if st.button("Generate Forecast"):
-        response = requests.post("http://localhost:8000/forecast", json=df.to_dict())
+        response = {"forecast": df['sales'].rolling(3).mean().fillna(method='bfill').tolist()}
         st.write(response.json())
